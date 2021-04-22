@@ -22,16 +22,38 @@ try:
                 #it's a letter but not yet in the dictionnary -> add it
                 char_dict[l_ch] = 1
            
-    #4. Print the dictionnary
-    print(len(char_dict))
-    
-    for letter, number in sorted(char_dict.items()):
-        print(letter, "->", number)
-    
-    sce_file.close()
+    #3. Order the results from higher to lower number
+    # Creation of a new dictionnary with new set order
+    # lambda function is passed in key to perform sort by key 
+    # passing 2nd element of items()
+    # adding "reversed = True" for reversed order
+    dic_nborder = {key : val for key, val in sorted(char_dict.items(), key = lambda elem:elem[1], reverse = True)}
+
+    for letter, number in dic_nborder.items():
+        print(letter, "->", number)   
 
 except IOError as e:
     print("Cannot open the text file given: ", strerror(e.errno))
     exit(e.errno)
 
+#4. Create a new file to save the histogram
+dest_name = str(sce_name + '_histo.txt')
+try:
+    dest_file = open(dest_name, 'wt')
+except Exception as e:
+    print("Cannot create destination file: ", strerror(e.errno))
+    sce_file.close()
+    exit(e.errno)
+
+#5. Write the content of the oredred dictionnary in the new file
+try:
+    for letter, number in dic_nborder.items():
+        dest_file.write(letter + " -> " + str(number)+ "\n")
+
+except IOError as e:
+    print("Cannot open the text file given: ", strerror(e.errno))
+    exit(e.errno)
+
+sce_file.close()
+dest_file.close()
 
